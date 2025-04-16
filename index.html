@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLB All-Star Gallery</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -28,8 +29,8 @@
         .player-card {
             position: relative;
             border-radius: 10px;
-            overflow: visible;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: visible; /* Changed to visible */
+            /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/ /* Removed box-shadow from here */
             transition: transform 0.3s ease;
             background-color: transparent;
             cursor: pointer;
@@ -71,13 +72,13 @@
             max-height: 200px;
             overflow-y: auto;
             border-radius: 10px;
-            visibility: hidden; /* Ensure it is hidden */
+            visibility: hidden;
             opacity: 0;
         }
 
         .player-card:hover .info-box {
             transform: translateY(0);
-            visibility: visible; /* Make it visible on hover */
+            visibility: visible;
             opacity: 1;
         }
 
@@ -93,6 +94,12 @@
             margin: 5px 0;
             font-size: 14px;
             color: #333;
+        }
+
+        /* Removed styles for canvas border and shadow */
+        .player-image {
+            border-radius: 10px;
+             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Added shadow to the image */
         }
 
         @media (max-width: 1200px) {
@@ -283,8 +290,8 @@
 
     <script>
         const playerImages = [
-            { url: "./img/trout.png", canvasId: "troutCanvas" },
-            { url: "./img/arod.png", canvasId: "arodCanvas" },
+            { url: "*/img/trout.png", canvasId: "troutCanvas" },
+            { url: "*/img/judge.png", canvasId: "arodCanvas" },
             { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/592450/headshot/67/current", canvasId: "judgeCanvas" },
             { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/660271/headshot/67/current", canvasId: "ohtaniCanvas" },
             { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/605141/headshot/67/current", canvasId: "bettsCanvas" },
@@ -310,8 +317,7 @@
             const imageData = ctx.getImageData(0, 0, width, height);
             const data = imageData.data;
 
-            const lowThreshold = 200;
-            const highThreshold = 240;
+            const threshold = 220;
 
             for (let y = 0; y < height; y++) {
                 for (let x = 0; x < width; x++) {
@@ -320,15 +326,18 @@
                     const g = data[pixelIndex + 1];
                     const b = data[pixelIndex + 2];
 
-                    if (r >= lowThreshold && r <= highThreshold &&
-                        g >= lowThreshold && g <= highThreshold &&
-                        b >= lowThreshold && b <= highThreshold) {
+                    if (r > threshold && g > threshold && b > threshold) {
                         data[pixelIndex + 3] = 0;
                     }
                 }
             }
 
             ctx.putImageData(imageData, 0, 0);
+
+            // No cropping, draw the whole image
+            ctx.drawImage(canvas, 0, 0, width, height);
+             canvas.style.borderRadius = '10px'; // Apply border radius to the canvas
+             canvas.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
         }
 
         playerImages.forEach(player => {
