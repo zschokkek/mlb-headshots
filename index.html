@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLB Player Gallery</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -20,19 +21,22 @@
         .gallery {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 15px;
+            gap: 25px; /* Increased gap slightly for better shadow visibility */
             max-width: 1400px;
-            margin: 0 auto;
+            margin: 20px auto; /* Added top/bottom margin */
         }
 
         .player-card {
             position: relative;
-            border-radius: 10px;
-            overflow: visible; /* Changed to visible */
-            /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/ /* Removed box-shadow from here */
+            /* border-radius: 10px; */ /* Removed radius from card */
+            overflow: visible;
             transition: transform 0.3s ease;
             background-color: transparent;
             cursor: pointer;
+            /* Add padding to prevent shadows clipping if needed, adjust as necessary */
+            padding: 10px;
+            margin: -10px; /* Counteract padding to maintain grid spacing */
+
         }
 
         .player-card:hover {
@@ -44,11 +48,13 @@
             height: auto;
             object-fit: contain;
             display: block;
-            border-radius: 10px;
+            /* Removed border-radius and box-shadow */
+            /* Added drop-shadow filter */
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3)); /* Adjusted shadow color slightly */
         }
 
         .player-name {
-            display: none;
+            display: none; /* Keep hidden unless needed */
             text-align: center;
             padding: 10px;
             font-weight: bold;
@@ -59,26 +65,29 @@
 
         .info-box {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            /* Adjust bottom positioning relative to the image, considering potential padding */
+            bottom: 10px; /* Adjusted based on card padding */
+            left: 10px;   /* Adjusted based on card padding */
+            right: 10px;  /* Adjusted based on card padding */
             background-color: rgba(255, 255, 255, 0.95);
             padding: 15px;
             transform: translateY(100%);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s linear 0.3s; /* Adjusted transition */
             z-index: 2;
             border-top: 3px solid #FFA500;
             max-height: 200px;
             overflow-y: auto;
-            border-radius: 10px;
+            border-radius: 10px; /* Keep radius for the info box itself */
             visibility: hidden;
             opacity: 0;
+             box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Optional: slight shadow for info box */
         }
 
         .player-card:hover .info-box {
             transform: translateY(0);
             visibility: visible;
             opacity: 1;
+            transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s linear 0s; /* Adjust transition */
         }
 
         .info-title {
@@ -95,26 +104,44 @@
             color: black;
         }
 
-        /* Removed styles for canvas border and shadow */
-        .player-image {
-            border-radius: 10px;
-             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Added shadow to the image */
+        @media (max-width: 1400px) { /* Adjusted breakpoint */
+             .gallery {
+                 grid-template-columns: repeat(5, 1fr); /* Adjusted columns */
+             }
         }
 
-        @media (max-width: 1200px) {
+        @media (max-width: 1000px) { /* Adjusted breakpoint */
             .gallery {
                 grid-template-columns: repeat(4, 1fr);
             }
         }
 
+
         @media (max-width: 768px) {
             .gallery {
                 grid-template-columns: repeat(2, 1fr);
+                 gap: 15px; /* Reduce gap on smaller screens */
             }
+             .player-card {
+                 padding: 5px; /* Reduce padding */
+                 margin: -5px; /* Adjust margin */
+             }
+             .info-box {
+                 bottom: 5px;
+                 left: 5px;
+                 right: 5px;
+             }
         }
+         @media (max-width: 480px) { /* Added breakpoint for very small screens */
+             .gallery {
+                 grid-template-columns: repeat(1, 1fr);
+                  max-width: 250px; /* Center single column */
+             }
+         }
     </style>
 </head>
 <body>
+    <h1>MLB Player Gallery</h1>
     <div class="gallery">
         <div class="player-card">
             <canvas id="troutCanvas" class="player-image"></canvas>
@@ -283,7 +310,6 @@
                 <p class="info-text"><strong>Known for:</strong> Longevity and maintaining velocity throughout career</p>
             </div>
         </div>
-    </div>
 
     <script>
         const playerImages = [
@@ -303,46 +329,63 @@
             { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/434378/headshot/67/current", canvasId: "verlanderCanvas" },
         ];
 
-        function removeBackground(img, canvas) {
+ function removeBackground(img, canvas) {
             const ctx = canvas.getContext('2d');
-            const width = img.width;
-            const height = img.height;
+            const width = img.naturalWidth; // Use naturalWidth for original size
+            const height = img.naturalHeight; // Use naturalHeight for original size
             canvas.width = width;
             canvas.height = height;
             ctx.drawImage(img, 0, 0, width, height);
 
-            const imageData = ctx.getImageData(0, 0, width, height);
-            const data = imageData.data;
+            try {
+                const imageData = ctx.getImageData(0, 0, width, height);
+                const data = imageData.data;
+                const threshold = 220; // Adjust threshold if needed for different background colors
 
-            const threshold = 220;
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
 
-            for (let y = 0; y < height; y++) {
-                for (let x = 0; x < width; x++) {
-                    const pixelIndex = (x + y * width) * 4;
-                    const r = data[pixelIndex];
-                    const g = data[pixelIndex + 1];
-                    const b = data[pixelIndex + 2];
-
+                    // Simple white/light grey removal - might need refinement for complex backgrounds
                     if (r > threshold && g > threshold && b > threshold) {
-                        data[pixelIndex + 3] = 0;
+                        data[i + 3] = 0; // Make pixel transparent
                     }
                 }
+                ctx.putImageData(imageData, 0, 0);
+                // No longer setting canvas style for border-radius or box-shadow here
+            } catch (e) {
+                console.error("Error processing image data (CORS issue?):", e);
+                // Fallback: draw the image without background removal if canvas is tainted
+                ctx.drawImage(img, 0, 0, width, height);
             }
-
-            ctx.putImageData(imageData, 0, 0);
-
-            // No cropping, draw the whole image
-            ctx.drawImage(canvas, 0, 0, width, height);
-             canvas.style.borderRadius = '10px'; // Apply border radius to the canvas
-             canvas.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
         }
 
         playerImages.forEach(player => {
             const img = new Image();
-            img.crossOrigin = "anonymous";
+            img.crossOrigin = "anonymous"; // Essential for reading pixel data from external URLs
             img.onload = function() {
                 const canvas = document.getElementById(player.canvasId);
-                removeBackground(img, canvas);
+                if (canvas) {
+                   removeBackground(img, canvas);
+                } else {
+                    console.error(`Canvas element with ID ${player.canvasId} not found.`);
+                }
+            };
+             img.onerror = function() {
+                 console.error(`Failed to load image: ${player.url}`);
+                  // Optional: Display a placeholder or message on error
+                 const canvas = document.getElementById(player.canvasId);
+                 if (canvas) {
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 100; // Example placeholder size
+                    canvas.height = 100;
+                    ctx.fillStyle = '#ccc';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = 'black';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Error', canvas.width / 2, canvas.height / 2);
+                 }
             };
             img.src = player.url;
         });
