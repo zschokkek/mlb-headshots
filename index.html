@@ -3,21 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MLB Stars Gallery</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f0f0;
             margin: 0;
             padding: 20px;
+            background-color: #f0f0f0;
         }
-        
+
         h1 {
             text-align: center;
             color: #0a3161;
             margin-bottom: 30px;
         }
-        
+
         .gallery {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -25,37 +24,39 @@
             max-width: 1400px;
             margin: 0 auto;
         }
-        
+
         .player-card {
             position: relative;
             border-radius: 10px;
-            overflow: hidden;
+            overflow: visible;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
-            background-color: white;
+            background-color: transparent;
             cursor: pointer;
         }
-        
+
         .player-card:hover {
             transform: translateY(-5px);
-            background-color: #FFA500;
         }
-        
+
         .player-image {
             width: 100%;
-            height: 180px;
-            object-fit: cover;
+            height: auto;
+            object-fit: contain;
             display: block;
+            border-radius: 10px;
         }
-        
+
         .player-name {
+            display: none;
             text-align: center;
             padding: 10px;
             font-weight: bold;
             background-color: #0a3161;
             color: white;
+            border-radius: 0 0 10px 10px;
         }
-        
+
         .info-box {
             position: absolute;
             bottom: 0;
@@ -69,12 +70,17 @@
             border-top: 3px solid #FFA500;
             max-height: 200px;
             overflow-y: auto;
+            border-radius: 10px;
+            visibility: hidden; /* Ensure it is hidden */
+            opacity: 0;
         }
-        
+
         .player-card:hover .info-box {
             transform: translateY(0);
+            visibility: visible; /* Make it visible on hover */
+            opacity: 1;
         }
-        
+
         .info-title {
             font-weight: bold;
             color: #0a3161;
@@ -82,19 +88,19 @@
             margin-bottom: 8px;
             font-size: 16px;
         }
-        
+
         .info-text {
             margin: 5px 0;
             font-size: 14px;
             color: #333;
         }
-        
+
         @media (max-width: 1200px) {
             .gallery {
                 grid-template-columns: repeat(4, 1fr);
             }
         }
-        
+
         @media (max-width: 768px) {
             .gallery {
                 grid-template-columns: repeat(2, 1fr);
@@ -104,11 +110,11 @@
 </head>
 <body>
     <h1>MLB All-Star Gallery</h1>
-    
+
     <div class="gallery">
-        <!-- Row 1 -->
         <div class="player-card">
-            <img src="https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/545361/headshot/67/current" alt="Mike Trout" class="player-image">
+            <canvas id="troutCanvas" class="player-image"></canvas>
+            <div class="player-name">Mike Trout</div>
             <div class="info-box">
                 <h3 class="info-title">Mike Trout</h3>
                 <p class="info-text"><strong>Team:</strong> Los Angeles Angels</p>
@@ -117,9 +123,10 @@
                 <p class="info-text"><strong>Known for:</strong> Exceptional batting and fielding abilities</p>
             </div>
         </div>
-        
+
         <div class="player-card">
-            <img src="https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/121347/headshot/67/current" alt="Alex Rodriguez" class="player-image">
+            <canvas id="arodCanvas" class="player-image"></canvas>
+            <div class="player-name">Alex Rodriguez</div>
             <div class="info-box">
                 <h3 class="info-title">Alex Rodriguez</h3>
                 <p class="info-text"><strong>Teams:</strong> Seattle Mariners, Texas Rangers, New York Yankees</p>
@@ -128,9 +135,10 @@
                 <p class="info-text"><strong>Known for:</strong> Power hitting and prolific career statistics</p>
             </div>
         </div>
-        
+
         <div class="player-card">
-            <img src="https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/592450/headshot/67/current" alt="Aaron Judge" class="player-image">
+            <canvas id="judgeCanvas" class="player-image"></canvas>
+            <div class="player-name">Aaron Judge</div>
             <div class="info-box">
                 <h3 class="info-title">Aaron Judge</h3>
                 <p class="info-text"><strong>Team:</strong> New York Yankees</p>
@@ -139,9 +147,10 @@
                 <p class="info-text"><strong>Known for:</strong> Towering home runs and impressive physical stature</p>
             </div>
         </div>
-        
+
         <div class="player-card">
-            <img src="https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/660271/headshot/67/current" alt="Shohei Ohtani" class="player-image">
+             <canvas id="ohtaniCanvas" class="player-image"></canvas>
+            <div class="player-name">Shohei Ohtani</div>
             <div class="info-box">
                 <h3 class="info-title">Shohei Ohtani</h3>
                 <p class="info-text"><strong>Teams:</strong> Los Angeles Angels, Los Angeles Dodgers</p>
@@ -150,9 +159,10 @@
                 <p class="info-text"><strong>Known for:</strong> Two-way player excelling at both pitching and hitting</p>
             </div>
         </div>
-        
+
         <div class="player-card">
-            <img src="https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/605141/headshot/67/current" alt="Mookie Betts" class="player-image">
+            <canvas id="bettsCanvas" class="player-image"></canvas>
+            <div class="player-name">Mookie Betts</div>
             <div class="info-box">
                 <h3 class="info-title">Mookie Betts</h3>
                 <p class="info-text"><strong>Teams:</strong> Boston Red Sox, Los Angeles Dodgers</p>
@@ -161,9 +171,10 @@
                 <p class="info-text"><strong>Known for:</strong> All-around excellence in hitting, fielding, and baserunning</p>
             </div>
         </div>
-        
+
         <div class="player-card">
-            <img src="https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/408234/headshot/67/current" alt="Miguel Cabrera" class="player-image">
+            <canvas id="cabreraCanvas" class="player-image"></canvas>
+            <div class="player-name">Miguel Cabrera</div>
             <div class="info-box">
                 <h3 class="info-title">Miguel Cabrera</h3>
                 <p class="info-text"><strong>Teams:</strong> Florida Marlins, Detroit Tigers</p>
@@ -172,9 +183,10 @@
                 <p class="info-text"><strong>Known for:</strong> Batting for both power and average</p>
             </div>
         </div>
-        
+
         <div class="player-card">
-            <img src="https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/594798/headshot/67/current" alt="Jacob deGrom" class="player-image">
+            <canvas id="degromCanvas" class="player-image"></canvas>
+            <div class="player-name">Jacob deGrom</div>
             <div class="info-box">
                 <h3 class="info-title">Jacob deGrom</h3>
                 <p class="info-text"><strong>Teams:</strong> New York Mets, Texas Rangers</p>
@@ -183,10 +195,10 @@
                 <p class="info-text"><strong>Known for:</strong> Dominant pitching with high velocity and precision</p>
             </div>
         </div>
-        
-        <!-- Row 2 -->
+
         <div class="player-card">
-            <img src="https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/519242/headshot/67/current" alt="Chris Sale" class="player-image">
+            <canvas id="saleCanvas" class="player-image"></canvas>
+             <div class="player-name">Chris Sale</div>
             <div class="info-box">
                 <h3 class="info-title">Chris Sale</h3>
                 <p class="info-text"><strong>Teams:</strong> Chicago White Sox, Boston Red Sox, Atlanta Braves</p>
@@ -195,9 +207,10 @@
                 <p class="info-text"><strong>Known for:</strong> Distinctive delivery and high strikeout rates</p>
             </div>
         </div>
-        
+
         <div class="player-card">
-            <img src="https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/665742/headshot/67/current" alt="Juan Soto" class="player-image">
+            <canvas id="sotoCanvas" class="player-image"></canvas>
+            <div class="player-name">Juan Soto</div>
             <div class="info-box">
                 <h3 class="info-title">Juan Soto</h3>
                 <p class="info-text"><strong>Teams:</strong> Washington Nationals, San Diego Padres, New York Yankees</p>
@@ -206,9 +219,10 @@
                 <p class="info-text"><strong>Known for:</strong> Advanced plate discipline at a young age</p>
             </div>
         </div>
-        
+
         <div class="player-card">
-            <img src="https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/118340/headshot/67/current" alt="Randy Johnson" class="player-image">
+            <canvas id="johnsonCanvas" class="player-image"></canvas>
+            <div class="player-name">Randy Johnson</div>
             <div class="info-box">
                 <h3 class="info-title">Randy Johnson</h3>
                 <p class="info-text"><strong>Teams:</strong> Multiple including Seattle Mariners, Arizona Diamondbacks</p>
@@ -217,9 +231,10 @@
                 <p class="info-text"><strong>Known for:</strong> Intimidating presence and powerful left-handed pitching</p>
             </div>
         </div>
-        
+
         <div class="player-card">
-            <img src="https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/477132/headshot/67/current" alt="Clayton Kershaw" class="player-image">
+            <canvas id="kershawCanvas" class="player-image"></canvas>
+            <div class="player-name">Clayton Kershaw</div>
             <div class="info-box">
                 <h3 class="info-title">Clayton Kershaw</h3>
                 <p class="info-text"><strong>Team:</strong> Los Angeles Dodgers</p>
@@ -228,9 +243,10 @@
                 <p class="info-text"><strong>Known for:</strong> Elite pitching with outstanding curveball</p>
             </div>
         </div>
-        
+
         <div class="player-card">
-            <img src="hhttps://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/119223/headshot/67/current" alt="Pedro Martinez" class="player-image">
+            <canvas id="martinezCanvas" class="player-image"></canvas>
+            <div class="player-name">Pedro Martinez</div>
             <div class="info-box">
                 <h3 class="info-title">Pedro Martinez</h3>
                 <p class="info-text"><strong>Teams:</strong> Multiple including Boston Red Sox, Montreal Expos</p>
@@ -239,9 +255,10 @@
                 <p class="info-text"><strong>Known for:</strong> Dominant pitching despite smaller stature</p>
             </div>
         </div>
-        
+
         <div class="player-card">
-            <img src="https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/453286/headshot/67/current" alt="Max Scherzer" class="player-image">
+            <canvas id="scherzerCanvas" class="player-image"></canvas>
+            <div class="player-name">Max Scherzer</div>
             <div class="info-box">
                 <h3 class="info-title">Max Scherzer</h3>
                 <p class="info-text"><strong>Teams:</strong> Multiple including Washington Nationals, Detroit Tigers</p>
@@ -250,9 +267,10 @@
                 <p class="info-text"><strong>Known for:</strong> Intense competitiveness and heterochromatic eyes</p>
             </div>
         </div>
-        
+
         <div class="player-card">
-            <img src="https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/434378/headshot/67/current" alt="Justin Verlander" class="player-image">
+            <canvas id="verlanderCanvas" class="player-image"></canvas>
+            <div class="player-name">Justin Verlander</div>
             <div class="info-box">
                 <h3 class="info-title">Justin Verlander</h3>
                 <p class="info-text"><strong>Teams:</strong> Detroit Tigers, Houston Astros, New York Mets</p>
@@ -264,8 +282,64 @@
     </div>
 
     <script>
-        // This script would normally load player images from an API
-        // For this example, we're using placeholder images
+        const playerImages = [
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/545361/headshot/67/current", canvasId: "troutCanvas" },
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/121347/headshot/67/current", canvasId: "arodCanvas" },
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/592450/headshot/67/current", canvasId: "judgeCanvas" },
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/660271/headshot/67/current", canvasId: "ohtaniCanvas" },
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/605141/headshot/67/current", canvasId: "bettsCanvas" },
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/408234/headshot/67/current", canvasId: "cabreraCanvas" },
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/594798/headshot/67/current", canvasId: "degromCanvas" },
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/519242/headshot/67/current", canvasId: "saleCanvas" },
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/665742/headshot/67/current", canvasId: "sotoCanvas" },
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/118340/headshot/67/current", canvasId: "johnsonCanvas" },
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/477132/headshot/67/current", canvasId: "kershawCanvas" },
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/119223/headshot/67/current", canvasId: "martinezCanvas" },
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/453286/headshot/67/current", canvasId: "scherzerCanvas" },
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/434378/headshot/67/current", canvasId: "verlanderCanvas" },
+        ];
+
+        function removeBackground(img, canvas) {
+            const ctx = canvas.getContext('2d');
+            const width = img.width;
+            const height = img.height;
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const imageData = ctx.getImageData(0, 0, width, height);
+            const data = imageData.data;
+
+            const lowThreshold = 200;
+            const highThreshold = 240;
+
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const pixelIndex = (x + y * width) * 4;
+                    const r = data[pixelIndex];
+                    const g = data[pixelIndex + 1];
+                    const b = data[pixelIndex + 2];
+
+                    if (r >= lowThreshold && r <= highThreshold &&
+                        g >= lowThreshold && g <= highThreshold &&
+                        b >= lowThreshold && b <= highThreshold) {
+                        data[pixelIndex + 3] = 0;
+                    }
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        playerImages.forEach(player => {
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.onload = function() {
+                const canvas = document.getElementById(player.canvasId);
+                removeBackground(img, canvas);
+            };
+            img.src = player.url;
+        });
     </script>
 </body>
 </html>
