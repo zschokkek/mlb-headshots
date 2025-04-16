@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLB Player Gallery</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -19,76 +20,70 @@
 
         .gallery {
             display: grid;
-            /* Adjusted columns for potentially wider images */
+            /* Use auto-fit for responsive columns based on minmax width */
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
+            gap: 20px; /* Spacing between images */
             max-width: 1400px;
             margin: 20px auto;
         }
 
         .player-card {
-            position: relative;
-            overflow: visible;
+            position: relative; /* Needed for absolute positioning of info-box */
+            overflow: visible; /* Allow info-box to show outside card area */
             transition: transform 0.3s ease;
-            background-color: #fff; /* Added a background for visual separation */
-            border-radius: 10px; /* Added radius back to the card */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for card */
+            background-color: transparent; /* No card background */
             cursor: pointer;
+            /* Removed border-radius and box-shadow */
         }
 
         .player-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhance shadow on hover */
+            transform: translateY(-5px); /* Keep subtle lift on hover */
+            /* Removed box-shadow enhancement on hover */
         }
 
         .player-image {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 1 / 1; /* Maintain square aspect ratio */
-            object-fit: cover;  /* Cover the area, may crop */
-            /* object-fit: contain; */ /* Use contain if showing the whole image is critical */
-            display: block;
-            border-radius: 10px 10px 0 0; /* Rounded top corners */
-            /* Add transparent border to reserve space */
-            border: 3px solid transparent;
-            box-sizing: border-box; /* Include border in element's total width/height */
-            /* Smooth transition for border color change */
-            transition: border-color 0.3s ease;
-            background-color: #e0e0e0; /* Background color while images load */
+            /* Basic image styling */
+            display: block; /* Remove extra space below image */
+            width: 100%;    /* Make image responsive */
+            height: auto;   /* Maintain aspect ratio */
+            /* Removed aspect-ratio enforcement */
+            /* Removed object-fit */
+            /* Removed border-radius */
+            /* Removed border */
+            /* Removed box-sizing */
+            /* Removed transition */
+            /* Removed background-color */
         }
 
-        /* Highlight border on hover */
-        .player-card:hover .player-image {
-            border-color: #ff6310; /* Highlight color */
-        }
+        /* Removed the hover rule that added the orange border */
+        /* .player-card:hover .player-image { ... } */
 
         .player-name {
-            /* This class isn't directly used for display in this version, */
-            /* but kept in HTML for potential future use */
-            display: none;
+            display: none; /* Keep hidden */
         }
 
         .info-box {
+            /* Keep info-box styled to be visible */
             position: absolute;
-            bottom: 0; /* Position relative to the card */
+            bottom: 0;
             left: 0;
             right: 0;
-            background-color: rgba(255, 255, 255, 0.98); /* Slightly less transparent */
-            padding: 10px 15px; /* Adjusted padding */
-            /* Let it slide up from the bottom of the card */
-            transform: translateY(100%);
+            background-color: rgba(255, 255, 255, 0.95); /* White background */
+            padding: 10px 15px;
+            transform: translateY(100%); /* Start hidden below */
             transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s linear 0.3s;
-            z-index: 2;
-            border-top: 1px solid #eee; /* Subtle top border */
-            max-height: 150px; /* Adjusted max height */
+            z-index: 2; /* Ensure it's above image if overlapping */
+            border-top: 3px solid #FFA500; /* Keep distinct top border */
+            max-height: 150px;
             overflow-y: auto;
-            border-radius: 0 0 10px 10px; /* Rounded bottom corners match card */
+            border-radius: 8px; /* Rounded corners for the info box */
             visibility: hidden;
             opacity: 0;
-             box-shadow: 0 -2px 5px rgba(0,0,0,0.05); /* Optional shadow */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Add shadow to info box */
         }
 
         .player-card:hover .info-box {
+            /* Show info box on card hover */
             transform: translateY(0);
             visibility: visible;
             opacity: 1;
@@ -100,16 +95,15 @@
             color: #0a3161;
             margin-top: 0;
             margin-bottom: 8px;
-            font-size: 1em; /* Relative font size */
+            font-size: 1em;
         }
 
         .info-text {
             margin: 4px 0;
-            font-size: 0.85em; /* Relative font size */
-            color: #333; /* Darker grey for text */
+            font-size: 0.85em;
+            color: #333;
             line-height: 1.4;
         }
-         /* Remove default link styling if player names become links */
          .info-box a {
              color: inherit;
              text-decoration: none;
@@ -129,9 +123,8 @@
          }
          @media (max-width: 480px) {
              .gallery {
-                 /* Switch to single column on very small screens */
-                 grid-template-columns: 1fr;
-                 max-width: 300px; /* Limit width for single column */
+                 grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Smaller min size */
+                 gap: 10px;
              }
               h1 {
                   font-size: 1.5em;
@@ -141,6 +134,7 @@
     </style>
 </head>
 <body>
+    <h1>MLB Player Gallery</h1>
     <div class="gallery">
         <div class="player-card">
             <img id="troutImage" class="player-image" alt="Mike Trout">
@@ -312,39 +306,45 @@
         </div>
 
     <script>
+        // Corrected elementId values to match actual img IDs
         const playerImages = [
             { url: "./img/trout.png", elementId: "troutImage" },
             { url: "./img/arod.png", elementId: "arodImage" },
-            { url: "./img/judge.png", celementId: "judgeImage" },
+            { url: "./img/judge.png", elementId: "judgeImage" }, // Fixed typo here
             { url: "./img/ohtani.png", elementId: "ohtaniImage" },
             { url: "./img/mookie.png", elementId: "bettsImage" },
             { url: "./img/miggy.png", elementId: "cabreraImage" },
             { url: "./img/degrom.png", elementId: "degromImage" },
-            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/519242/headshot/67/current", elementId: "saleCanvas" },
-            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/665742/headshot/67/current", elementId: "sotoCanvas" },
-            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/118340/headshot/67/current", elementId: "johnsonCanvas" },
-            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/477132/headshot/67/current", elementId: "kershawCanvas" },
-            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/119223/headshot/67/current", elementId: "martinezCanvas" },
-            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/453286/headshot/67/current", elementId: "scherzerCanvas" },
-            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/434378/headshot/67/current", elementId: "verlanderCanvas" },
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/519242/headshot/67/current", elementId: "saleImage" }, // Corrected ID
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/665742/headshot/67/current", elementId: "sotoImage" }, // Corrected ID
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/118340/headshot/67/current", elementId: "johnsonImage" }, // Corrected ID
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/477132/headshot/67/current", elementId: "kershawImage" }, // Corrected ID
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/119223/headshot/67/current", elementId: "martinezImage" }, // Corrected ID
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/453286/headshot/67/current", elementId: "scherzerImage" }, // Corrected ID
+            { url: "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/434378/headshot/67/current", elementId: "verlanderImage" }, // Corrected ID
         ];
 
- 
+
         // Simple function to set image sources
         function loadPlayerImages() {
             playerImages.forEach(player => {
-                const imgElement = document.getElementById(player.elementId);
-                if (imgElement) {
-                    imgElement.src = player.url;
-                     imgElement.onerror = function() {
-                         // Optional: Handle image loading errors
-                         console.error(`Failed to load image: ${player.url}`);
-                         imgElement.alt = `Error loading image for ${player.elementId.replace('Image', '')}`;
-                         // You could set a placeholder src here if needed
-                         // imgElement.src = 'path/to/placeholder.png';
-                     };
+                // Check if elementId exists and is not null/empty
+                if (player.elementId) {
+                    const imgElement = document.getElementById(player.elementId);
+                    if (imgElement) {
+                        imgElement.src = player.url;
+                         imgElement.onerror = function() {
+                             // Optional: Handle image loading errors
+                             console.error(`Failed to load image: ${player.url}`);
+                             imgElement.alt = `Error loading image for ${player.elementId.replace('Image', '')}`;
+                             // You could set a placeholder src here if needed
+                             // imgElement.src = 'path/to/placeholder.png';
+                         };
+                    } else {
+                        console.error(`Image element with ID ${player.elementId} not found.`);
+                    }
                 } else {
-                    console.error(`Image element with ID ${player.elementId} not found.`);
+                     console.error(`Player object missing elementId: ${JSON.stringify(player)}`);
                 }
             });
         }
